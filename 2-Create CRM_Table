@@ -1,0 +1,36 @@
+# Query below works by hashing the fullVisitorID, which creates a random distribution.  
+# We use modulo to artificially split gender and hhi distribution.
+CREATE OR REPLACE TABLE kmeans.CRM_Table AS
+SELECT
+  fullVisitorID,
+IF
+  (MOD(Hashed_fullVisitorID,2) = 0,
+    "M",
+    "F") AS gender,
+  CASE
+    WHEN MOD(Hashed_fullVisitorID,10) = 0 THEN 55000
+    WHEN MOD(Hashed_fullVisitorID,10) < 3 THEN 65000
+    WHEN MOD(Hashed_fullVisitorID,10) < 7 THEN 75000
+    WHEN MOD(Hashed_fullVisitorID,10) < 9 THEN 85000
+    WHEN MOD(Hashed_fullVisitorID,10) = 9 THEN 95000
+  ELSE
+  Hashed_fullVisitorID
+END
+  AS hhi
+FROM (
+  SELECT
+    fullVisitorID,
+    ABS(farm_fingerprint(fullVisitorID)) AS Hashed_fullVisitorID,
+  FROM
+    `bigquery-public-data.google_analytics_sample.ga_sessions_*`,
+    UNNEST(hits) AS hits,
+    UNNEST(hits.product) AS hits_product
+  WHERE
+    _TABLE_SUFFIX BETWEEN '20160801'
+    AND '20160831'
+    AND geoNetwork.country = 'United States'
+    AND type = 'EVENT'
+  GROUP BY
+    1,
+    2)
+
