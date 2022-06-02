@@ -1,0 +1,5 @@
+CREATE OR REPLACE MODEL ds2.customer_segmentation_3
+    OPTIONS(model_type='kmeans',
+    kmeans_init_method = 'KMEANS++',
+    num_clusters=3) AS
+    SELECT * except(fullVisitorID, Hashed_fullVisitorID) FROM ds2.Final_Table
