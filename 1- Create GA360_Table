@@ -1,1 +1,46 @@
-
+CREATE OR REPLACE TABLE ds2.GA360_Table AS
+SELECT
+  fullVisitorID,
+  ABS(farm_fingerprint(fullVisitorID)) AS Hashed_fullVisitorID, # This will be used to generate random data.
+  MAX(device.operatingSystem) AS OS, # We can aggregate this because an OS is tied to a fullVisitorID.
+  SUM (CASE
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Apparel' THEN 1 ELSE 0 END) AS Apparel,
+  SUM (CASE  
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Office' THEN 1 ELSE 0 END) AS Office,
+  SUM (CASE
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Electronics' THEN 1 ELSE 0 END) AS Electronics,
+  SUM (CASE
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Limited Supply' THEN 1 ELSE 0 END) AS LimitedSupply,
+  SUM (CASE
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Accessories' THEN 1 ELSE 0 END) AS Accessories,
+  SUM (CASE
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Shop by Brand' THEN 1 ELSE 0 END) AS ShopByBrand,
+  SUM (CASE
+       WHEN REGEXP_EXTRACT (v2ProductCategory, 
+                           r'^(?:(?:.*?)Home/)(.*?)/') 
+                           = 'Bags' THEN 1 ELSE 0 END) AS Bags,
+  ROUND (SUM (productPrice/1000000),2) AS productPrice_USD
+FROM
+  `bigquery-public-data.google_analytics_sample.ga_sessions_*`,
+  UNNEST(hits) AS hits,
+  UNNEST(hits.product) AS hits_product
+WHERE
+  _TABLE_SUFFIX BETWEEN '20160801'
+  AND '20160831'
+  AND geoNetwork.country = 'United States'
+  AND type = 'EVENT'
+GROUP BY
+  1,
+  2
