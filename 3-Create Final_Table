@@ -1,0 +1,7 @@
+CREATE OR REPLACE TABLE ds2.Final_Table AS
+SELECT
+   g.*,
+   c.* EXCEPT(fullVisitorId)
+FROM ds2.GA360_Table g
+JOIN ds2.CRM_Table c
+ON g.fullVisitorId = c.fullVisitorId
