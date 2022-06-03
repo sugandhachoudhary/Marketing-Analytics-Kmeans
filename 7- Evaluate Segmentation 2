@@ -1,0 +1,6 @@
+# Here we evaluate our second customer segmentation using 2 key metrics for KMeans models
+
+SELECT 
+  davies_bouldin_index,
+  mean_squared_distance 
+FROM ML.EVALUATE(MODEL `ds2.customer_segmentation_9`);
