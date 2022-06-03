@@ -1,0 +1,7 @@
+# Our first segmentation model will identify 4 customer clusters based on the fields in our Final Table, (GA360 data + CRM data).
+
+CREATE OR REPLACE MODEL ds2.customer_segmentation_4
+    OPTIONS(model_type='kmeans',
+    kmeans_init_method = 'KMEANS++',
+    num_clusters=4) AS
+    SELECT * except(fullVisitorID, Hashed_fullVisitorID) FROM ds2.Final_Table;
