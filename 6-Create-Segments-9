@@ -1,0 +1,7 @@
+# Here we create a more granular segmentation with 9 clusters, based on the data in our Final Table
+
+CREATE OR REPLACE MODEL ds2.customer_segmentation_9
+    OPTIONS(model_type='kmeans',
+    kmeans_init_method = 'KMEANS++',
+    num_clusters=9) AS
+    SELECT * except(fullVisitorID, Hashed_fullVisitorID) FROM ds2.Final_Table;
