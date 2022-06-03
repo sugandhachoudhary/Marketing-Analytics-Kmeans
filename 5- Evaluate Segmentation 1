@@ -1,0 +1,7 @@
+# Here we evaluate our first customer segmentation by looking at 2 key metrics
+# (We can also see these metrics, and more, by opening up the KMeans model in the BigQuery console.)
+
+SELECT 
+  davies_bouldin_index,
+  mean_squared_distance 
+FROM ML.EVALUATE(MODEL `ds2.customer_segmentation_4`);
