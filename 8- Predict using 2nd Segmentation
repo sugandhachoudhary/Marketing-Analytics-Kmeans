@@ -1,0 +1,12 @@
+# Here we use our 2nd KMeans model to segment customers into one of nine cluster groups
+
+SELECT
+  * 
+FROM
+  ML.PREDICT(
+    MODEL `ds2.customer_segmentation_9`,
+      (
+        SELECT * except(fullVisitorID, Hashed_fullVisitorID)
+        FROM `ds2.Final_Table`
+      )
+    )
