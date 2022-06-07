@@ -1,6 +1,6 @@
 # Query below works by hashing the fullVisitorID, which creates a random distribution.  
 # We use modulo to artificially split gender and hhi distribution.
-CREATE OR REPLACE TABLE kmeans.CRM_Table AS
+CREATE OR REPLACE TABLE ds2.CRM_Table AS
 SELECT
   fullVisitorID,
 IF
@@ -33,4 +33,3 @@ FROM (
   GROUP BY
     1,
     2)
-
